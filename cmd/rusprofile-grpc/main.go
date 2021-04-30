@@ -27,34 +27,48 @@ var (
 func main() {
 	flag.Parse()
 
-	go func() {
-		mux := http.NewServeMux()
+	go startHTTPServer()
+	startGRPCServer()
+}
 
-		mux.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, *swaggerSpecPath)
-		})
-		mux.HandleFunc("/swagger-ui/", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, path.Join(*staticFilesPath, "index.html"))
-		})
-		mux.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
-			p := strings.TrimPrefix(r.URL.Path, "/static")
-			p = path.Join(*staticFilesPath, p)
-			http.ServeFile(w, r, p)
-		})
+func startHTTPServer() {
+	mux := http.NewServeMux()
 
-		h := runtime.NewServeMux()
-		opts := []grpc.DialOption{grpc.WithInsecure()}
-		if err := pkg.RegisterCompanyFinderHandlerFromEndpoint(context.Background(), h, fmt.Sprintf(":%d", *grpcPort), opts); err != nil {
-			log.Fatalf("couldn't register HTTP handler: %v", err)
-		}
+	mux.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, *swaggerSpecPath)
+	})
+	mux.HandleFunc("/swagger-ui/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, path.Join(*staticFilesPath, "index.html"))
+	})
+	mux.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		p := strings.TrimPrefix(r.URL.Path, "/static")
+		p = path.Join(*staticFilesPath, p)
+		http.ServeFile(w, r, p)
+	})
 
-		mux.Handle("/", h)
+	gw, err := registerGatewayEndpoints()
+	if err != nil {
+		log.Fatalf("couldn't register gateway endpoints: %v", err)
+	}
 
-		if err := http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), mux); err != nil {
-			log.Fatalf("HTTP server stopped with error: %v", err)
-		}
-	}()
+	mux.Handle("/", gw)
 
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), mux); err != nil {
+		log.Fatalf("HTTP server stopped with error: %v", err)
+	}
+}
+
+func registerGatewayEndpoints() (http.Handler, error) {
+	h := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+	if err := pkg.RegisterCompanyFinderHandlerFromEndpoint(context.Background(), h, fmt.Sprintf(":%d", *grpcPort), opts); err != nil {
+		return nil, fmt.Errorf("couldn't register HTTP handler: %w", err)
+	}
+
+	return h, nil
+}
+
+func startGRPCServer() {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *grpcPort))
 	if err != nil {
 		log.Fatalf("couldn't start gRPC server: %v", err)
