@@ -1,6 +1,6 @@
 syntax = "proto3";
 package rusprofile.v1;
-option go_package = "github.com/iskorotkov/rusprofilegrpc/pkg";
+option go_package = "github.com/iskorotkov/rusprofile-grpc/pkg";
 
 import "google/api/annotations.proto";
 
@@ -20,5 +20,5 @@ message Company {
   string INN = 1;
   string KPP = 2;
   string name = 3;
-  string ceo = 4;
+  string CEO = 4;
 }

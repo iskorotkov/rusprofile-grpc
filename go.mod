@@ -1,4 +1,4 @@
-module github.com/iskorotkov/rusprofilegrpc
+module github.com/iskorotkov/rusprofile-grpc
 
 go 1.16
 

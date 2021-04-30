@@ -110,7 +110,7 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 		INN:  comp.INN,
 		KPP:  kpp,
 		Name: comp.Name,
-		Ceo:  comp.CEO,
+		CEO:  comp.CEO,
 	}, nil
 }
 
