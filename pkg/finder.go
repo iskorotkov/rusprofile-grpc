@@ -92,7 +92,7 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 		return nil, fmt.Errorf("no kpp value was found")
 	}
 
-	kpp := selection.Nodes[0].Data
+	kpp := selection.Nodes[0].FirstChild.Data
 
 	return &Company{
 		INN:  strings.Trim(company.INN, "!~"),
