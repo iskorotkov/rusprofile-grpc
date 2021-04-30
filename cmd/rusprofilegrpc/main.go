@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -44,6 +46,14 @@ func main() {
 			p = path.Join(*swaggerSpecPath, p)
 			http.ServeFile(w, r, p)
 		})
+
+		h := runtime.NewServeMux()
+		opts := []grpc.DialOption{grpc.WithInsecure()}
+		if err := pkg.RegisterCompanyFinderHandlerFromEndpoint(context.Background(), h, fmt.Sprintf(":%d", *grpcPort), opts); err != nil {
+			log.Fatalf("couldn't register HTTP handler: %v", err)
+		}
+
+		mux.Handle("/api", h)
 
 		if err := http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), mux); err != nil {
 			log.Fatalf("HTTP server stopped with error: %v", err)

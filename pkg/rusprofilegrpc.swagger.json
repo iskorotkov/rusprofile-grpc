@@ -15,7 +15,40 @@
   "produces": [
     "application/json"
   ],
-  "paths": {},
+  "paths": {
+    "/rusprofile.CompanyFinder/ByINN": {
+      "post": {
+        "operationId": "CompanyFinder_ByINN",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/rusprofileCompany"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/rusprofileINN"
+            }
+          }
+        ],
+        "tags": [
+          "CompanyFinder"
+        ]
+      }
+    }
+  },
   "definitions": {
     "protobufAny": {
       "type": "object",
@@ -60,6 +93,14 @@
           "type": "string"
         },
         "ceo": {
+          "type": "string"
+        }
+      }
+    },
+    "rusprofileINN": {
+      "type": "object",
+      "properties": {
+        "INN": {
           "type": "string"
         }
       }
