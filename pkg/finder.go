@@ -11,6 +11,8 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -34,12 +36,12 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 
 	req, err := http.NewRequestWithContext(ctx, "GET", searchURL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't create request: %w", err)
+		return nil, status.Errorf(codes.Internal, "couldn't create request: %v", err)
 	}
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
+		return nil, status.Errorf(codes.Internal, "request failed: %v", err)
 	}
 
 	defer func(Body io.ReadCloser) {
@@ -51,7 +53,7 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't read request body: %w", err)
+		return nil, status.Errorf(codes.Internal, "couldn't read request body: %v", err)
 	}
 
 	var data struct {
@@ -59,7 +61,7 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 	}
 
 	if err := json.Unmarshal(b, &data); err != nil {
-		return nil, fmt.Errorf("couldn't unmarshal to json: %w", err)
+		return nil, status.Errorf(codes.Internal, "couldn't unmarshal to json: %v", err)
 	}
 
 	var comp *company
@@ -74,17 +76,17 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 	}
 
 	if comp == nil {
-		return nil, fmt.Errorf("no company with provided INN")
+		return nil, status.Error(codes.NotFound, "no company with provided INN")
 	}
 
 	req, err = http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s%s", serverAddress, comp.URL), nil)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't create request: %w", err)
+		return nil, status.Errorf(codes.Internal, "couldn't create request: %v", err)
 	}
 
 	resp, err = http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
+		return nil, status.Errorf(codes.Internal, "request failed: %v", err)
 	}
 
 	defer func(Body io.ReadCloser) {
@@ -96,12 +98,12 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't create html document: %w", err)
+		return nil, status.Errorf(codes.Internal, "couldn't create html document: %v", err)
 	}
 
 	selection := doc.Find("#clip_kpp")
 	if len(selection.Nodes) == 0 {
-		return nil, fmt.Errorf("no kpp value was found")
+		return nil, status.Errorf(codes.Internal, "no kpp value was found")
 	}
 
 	kpp := selection.Nodes[0].FirstChild.Data
