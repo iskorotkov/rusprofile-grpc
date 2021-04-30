@@ -1,7 +1,10 @@
 IMAGE = iskorotkov/rusprofile
 TAG = v0.1.0
 
-.PHONY: build run test build-image push-image run-image
+.PHONY: build run test build-image push-image run-image protoc-update
+
+protoc-update:
+	cd pkg && buf generate
 
 build:
 	go build ./...

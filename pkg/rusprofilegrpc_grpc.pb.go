@@ -97,5 +97,5 @@ var CompanyFinder_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "pkg/rusprofilegrpc.proto",
+	Metadata: "rusprofilegrpc.proto",
 }

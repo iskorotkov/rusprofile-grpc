@@ -1,0 +1,68 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "rusprofilegrpc.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "CompanyFinder"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "rusprofileCompany": {
+      "type": "object",
+      "properties": {
+        "INN": {
+          "type": "string"
+        },
+        "KPP": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ceo": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
