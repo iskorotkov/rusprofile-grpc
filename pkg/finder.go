@@ -45,8 +45,7 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 	}
 
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
+		if err := Body.Close(); err != nil {
 			log.Printf("failed to close response body: %v", err)
 		}
 	}(resp.Body)
@@ -90,8 +89,7 @@ func (c CompanyFinder) ByINN(ctx context.Context, inn *INN) (*Company, error) {
 	}
 
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
+		if err := Body.Close(); err != nil {
 			log.Printf("failed to close response body: %v", err)
 		}
 	}(resp.Body)
