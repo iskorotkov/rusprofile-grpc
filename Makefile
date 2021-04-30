@@ -1,5 +1,5 @@
 IMAGE = iskorotkov/rusprofile-grpc
-TAG = v1.0.0
+TAG = v1.0.1
 
 .PHONY: proto-generate build run test build-image push-image run-image build-push-image
 

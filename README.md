@@ -14,7 +14,7 @@ The wrapper provides access to [rusprofile.ru](https://www.rusprofile.ru/) data 
 To run Docker container, execute the following:
 
 ```shell
-docker run -it -p 8080:8080 -p 8888:8888 --rm iskorotkov/rusprofile-grpc:v1.0.0
+docker run -it -p 8080:8080 -p 8888:8888 --rm iskorotkov/rusprofile-grpc:v1.0.1
 ```
 
 ## Test
