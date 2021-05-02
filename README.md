@@ -1,5 +1,8 @@
 # gRPC wrapper for rusprofile.ru
 
+[![Go](https://github.com/iskorotkov/rusprofile-grpc/actions/workflows/go.yml/badge.svg)](https://github.com/iskorotkov/rusprofile-grpc/actions/workflows/go.yml)
+[![CodeQL](https://github.com/iskorotkov/rusprofile-grpc/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/iskorotkov/rusprofile-grpc/actions/workflows/codeql-analysis.yml)
+
 The wrapper provides access to [rusprofile.ru](https://www.rusprofile.ru/) data via gRPC. HTTP API is available via HTTP-to-gRPC gateway.
 
 - [gRPC wrapper for rusprofile.ru](#grpc-wrapper-for-rusprofileru)
