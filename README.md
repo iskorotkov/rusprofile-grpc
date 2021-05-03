@@ -11,6 +11,7 @@ The wrapper provides access to [rusprofile.ru](https://www.rusprofile.ru/) data 
     - [gRPC](#grpc)
     - [HTTP](#http)
     - [Browser](#browser)
+  - [Project structure](#project-structure)
 
 ## Run
 
@@ -49,3 +50,13 @@ curl localhost:8080/v1/company/5902879646
 ### Browser
 
 Open [Swagger UI](http://localhost:8080/swagger-ui/) in your browser.
+
+## Project structure
+
+- api - proto files and buf configuration
+  - openapiv2 - generated swagger.json file
+- build - Dockerfile
+- cmd - main package
+- pkg - generated Go files and implementation of gRPC server for getting data from rusprofile.ru
+- static/web - static files for Swagger UI page
+- tools - imports for tools used in code generation
